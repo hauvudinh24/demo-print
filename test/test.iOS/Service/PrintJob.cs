@@ -12,18 +12,24 @@ using WebKit;
 using Xamarin.Forms;
 using test.iOS;
 using test.Template;
+using test.iOS.Enum;
+using test.iOS.Helper.Native;
+using CoreAudioKit;
+using SpriteKit;
+using static CoreFoundation.DispatchSource;
 
 [assembly: Xamarin.Forms.Dependency(typeof(PrintJob))]
 namespace test.iOS
 {
-	public class PrintJob: IPrinter
+	public class PrintJob
     {
         public PrintJob()
         {
 
         }
-       public  void SelectPrinter()
-       {
+
+        public  void SelectPrinter( NSData renderer)
+        {
             UIPrintInteractionController printController = UIPrintInteractionController.SharedPrintController;
 
 
@@ -32,6 +38,7 @@ namespace test.iOS
             var printInfo = UIPrintInfo.PrintInfo;
             printInfo.JobName = "Print";
             printInfo.OutputType = UIPrintInfoOutputType.General;
+            var paperSizeInPoints = new CGSize(595, 842); // A4 size in points
 
             controller.PrintInfo = printInfo;
             controller.PrintPageRenderer = new GuestPrintPageRenderer();
@@ -40,7 +47,21 @@ namespace test.iOS
 
             try
             {
-                controller.Present(true, PrintingCompleted);
+                var printerPicker = UIPrinterPickerController.FromPrinter(null);
+
+                printerPicker.Present(true, (printerPickerController, userDidSelect, error) =>//PresentFromBarButtonItem(printButtonItem1, false, (printerPickerController, userDidSelect, error) =>//Present(false, (printerPickerController, userDidSelect, error) =>
+                {
+                    if (userDidSelect)
+                    {
+                        var selectedPrinter = printerPicker.SelectedPrinter;
+                        if (selectedPrinter != null)
+                        {
+                            NSUserDefaults.StandardUserDefaults.SetString( selectedPrinter.Url.AbsoluteString, "URL_PRINTER");
+                            NSUserDefaults.StandardUserDefaults.Synchronize();
+                            Printer(selectedPrinter.Url.AbsoluteString, renderer);
+                        }
+                    }
+                });
             }
             catch (Exception ex)
             {
@@ -48,33 +69,35 @@ namespace test.iOS
             }
         }
 
-        public void Printer()
+        public void Printer(String printerUrl, NSData data)
         {
-            var uiPrinter = UIPrinter.FromUrl(new NSUrl("ipp://BRW8CC84B1C9863.local.:631/ipp/print"));
-            var template = new htm_printer() { };
-            var page = template.GenerateString();
-            var formatter = new UIMarkupTextPrintFormatter(page);
-            formatter.PerPageContentInsets = UIEdgeInsets.Zero;
-
-            var renderer = new UIPrintPageRenderer();
-            renderer.AddPrintFormatter(formatter, 0);
+            var uiPrinter = UIPrinter.FromUrl(new NSUrl(printerUrl));
 
             var controller = UIPrintInteractionController.SharedPrintController;
+            controller.PrintingItem = data;
+
+
             var printInfo = UIPrintInfo.PrintInfo;
             printInfo.JobName = "Print";
             printInfo.OutputType = UIPrintInfoOutputType.General;
+            printInfo.Orientation = UIPrintInfoOrientation.Landscape;
+
 
             controller.PrintInfo = printInfo;
-            controller.PrintPageRenderer = renderer;
+            //controller.PrintPageRenderer = renderer;
             controller.ShowsPaperSelectionForLoadedPapers = true;
 
-          
-            controller.PrintToPrinter(uiPrinter, (printInteractionController, completed, error) =>
+            //controller.PrintToPrinter(uiPrinter, (printInteractionController, completed, error) =>
+            //        {
+            //            printInfo?.Dispose();
+            //            uiPrinter?.Dispose();
+            //        });
+
+            controller.Present(true, (printInteractionController, completed, error) =>
                     {
                         printInfo?.Dispose();
                         uiPrinter?.Dispose();
                     });
-
         }
 
         void PrintingCompleted(UIPrintInteractionController controller, bool completed, NSError error)

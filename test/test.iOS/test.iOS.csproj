@@ -76,6 +76,8 @@
     </Compile>
     <Compile Include="PrinterSelectionApp.cs" />
     <Compile Include="GuestPrintPageRenderer.cs" />
+    <Compile Include="Helper\Native\WebViewCallback.cs" />
+    <Compile Include="Dependency\PDFConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
@@ -147,5 +149,8 @@
   <ItemGroup>
     <Folder Include="Helper\" />
     <Folder Include="Service\" />
+    <Folder Include="Helper\Native\" />
+    <Folder Include="Modal\" />
+    <Folder Include="Dependency\" />
   </ItemGroup>
 </Project>

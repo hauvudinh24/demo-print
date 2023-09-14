@@ -5,6 +5,7 @@ namespace test.Services
 	{
         void SelectPrinter();
         void Printer();
+        void ConvertHTMLtoPDF(PDFToHtml _PDFToHtml);
     }
 }
 
