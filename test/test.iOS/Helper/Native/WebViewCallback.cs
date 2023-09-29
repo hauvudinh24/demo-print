@@ -17,10 +17,12 @@ namespace test.iOS.Helper.Native
     class WebViewCallBack : WKNavigationDelegate
     {
         private PDFToHtml PDFToHtml { get; set; }
+        private PrintJob printer { get; set; }
 
-        public WebViewCallBack(PDFToHtml _pDFToHtml)
+        public WebViewCallBack(PDFToHtml _pDFToHtml, PrintJob printJob)
         {
             PDFToHtml = _pDFToHtml;
+            printer = printJob;
         }
 
         [Obsolete]
@@ -42,17 +44,15 @@ namespace test.iOS.Helper.Native
 
                     renderer.SetValueForKey(NSValue.FromObject(paperRect), nSString);
                     renderer.SetValueForKey(NSValue.FromObject(printableRect), printableRectstring);
-                NSData file = PrintToPDFWithRenderer(renderer, paperRect);
+                    NSData file = PrintToPDFWithRenderer(renderer, paperRect);
 
-                var savedValue = NSUserDefaults.StandardUserDefaults.StringForKey("URL_PRINTER");
-                if (savedValue != null)
+                    var savedValue = NSUserDefaults.StandardUserDefaults.StringForKey("URL_PRINTER");
+                    if (savedValue != null)
                     {
-                    var printer = new PrintJob();
-                    printer.Printer(savedValue, file);
+                        printer.Printer(savedValue, file);
                     }
                     else
                     {
-                        var printer = new PrintJob();
                         printer.SelectPrinter(file);
                     }
 

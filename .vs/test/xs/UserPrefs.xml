@@ -1,9 +1,9 @@
 ﻿<Properties StartupConfiguration="{AE1DA334-888B-4B8C-B9EE-763875D69565}|Default">
   <MultiItemStartupConfigurations />
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhoneSimulator" />
   <MonoDevelop.Ide.Workbench ActiveDocument="test/test.iOS/Service/PrintJob.cs">
     <Files>
-      <File FileName="test/test/MainPage.xaml.cs" Line="11" Column="4" />
+      <File FileName="test/test/MainPage.xaml.cs" />
       <File FileName="test/test/MainPage.xaml" />
       <File FileName="test/test/App.xaml" />
       <File FileName="test/test/AssemblyInfo.cs" />
@@ -15,7 +15,7 @@
       <File FileName="test/test.iOS/Helper/Settings.cs" />
       <File FileName="test/test.iOS/Properties/AssemblyInfo.cs" />
       <File FileName="test/test/Services/IPrinter.cs" />
-      <File FileName="test/test.iOS/Service/PrintJob.cs" Line="64" Column="59" />
+      <File FileName="test/test.iOS/Service/PrintJob.cs" Line="85" Column="1" />
       <File FileName="test/test.iOS/ChoosingAPrinter.cs" />
       <File FileName="test/test.iOS/ChoosingAPrinter.designer.cs" />
       <File FileName="test/test.iOS/PrinterSelectionApp.cs" />
@@ -50,6 +50,6 @@
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhoneSimulator" />
-  <MonoDevelop.Ide.ItemProperties.test.iOS PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.7F4C5489-1B48-4C9F-AC73-1BDA31761EB6" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.test.iOS PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.Generic" />
 </Properties>

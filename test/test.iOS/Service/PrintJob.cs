@@ -17,12 +17,15 @@ using test.iOS.Helper.Native;
 using CoreAudioKit;
 using SpriteKit;
 using static CoreFoundation.DispatchSource;
+using System.Collections.Generic;
 
 [assembly: Xamarin.Forms.Dependency(typeof(PrintJob))]
 namespace test.iOS
 {
 	public class PrintJob
     {
+        public static Dictionary<string, UIPrinter> selectedPrinters = new Dictionary<string, UIPrinter>();
+
         public PrintJob()
         {
 
@@ -84,20 +87,33 @@ namespace test.iOS
 
 
             controller.PrintInfo = printInfo;
-            //controller.PrintPageRenderer = renderer;
+
             controller.ShowsPaperSelectionForLoadedPapers = true;
 
-            //controller.PrintToPrinter(uiPrinter, (printInteractionController, completed, error) =>
-            //        {
-            //            printInfo?.Dispose();
-            //            uiPrinter?.Dispose();
-            //        });
+            var selectedPrinterID = new NSUrl(printerUrl);
 
-            controller.Present(true, (printInteractionController, completed, error) =>
+            var printerURLString = selectedPrinterID.AbsoluteString;
+
+            if (!selectedPrinters.ContainsKey(printerURLString))
+            {
+                selectedPrinters[printerURLString] = UIPrinter.FromUrl(selectedPrinterID);
+            }
+            selectedPrinters[printerURLString].ContactPrinter((available) =>
+            {
+                // Handle printer availability
+                if (available)
+                {
+                    controller.PrintToPrinter(selectedPrinters[printerURLString], (printInteractionController, completed, error) =>
                     {
-                        printInfo?.Dispose();
-                        uiPrinter?.Dispose();
-                    });
+                        printInfo.Dispose();
+                        controller.Dispose();
+                    }); ;
+                }
+                else
+                {
+                    SelectPrinter(data);
+                }
+            });
         }
 
         void PrintingCompleted(UIPrintInteractionController controller, bool completed, NSError error)
